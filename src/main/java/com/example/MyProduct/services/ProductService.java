@@ -2,6 +2,9 @@ package com.example.MyProduct.services;
 
 import com.example.MyProduct.models.Product;
 import com.example.MyProduct.repositories.ProductRepository;
+import com.example.MyProduct.repositories.SalesRepository;
+import com.example.MyProduct.repositories.SuppliesRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -16,6 +19,8 @@ import java.util.stream.Collectors;
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
+    private final SalesRepository salesRepository;
+    private final SuppliesRepository suppliesRepository;
 
     public List<Product> listProducts(String title) {/*Получение всего списка*/
         if (title != null)
@@ -36,7 +41,10 @@ public class ProductService {
         });
     }
 
+    @Transactional
     public void deleteProduct(Long id) {
+        salesRepository.deleteAllByProductId(id);
+        suppliesRepository.deleteAllByProductId(id);
         productRepository.deleteById(id);
     }
 
