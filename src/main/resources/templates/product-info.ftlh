@@ -13,9 +13,9 @@
 <hr>
 <h3>Редактировать товар</h3>
 <form action="/product/update/${product.id}" method="post">
-    Название Объявления: <input type="text" name="title" maxlength="255" required/><br><br>
-    Описание Объявления: <input type="text" name="description" maxlength="4096" required/><br><br>
-    Цена: <input type="number" name="price" min="0" required/><br><br>
+    Название объявления: <input type="text" name="title" value="${product.title}" maxlength="255" required /><br><br>
+    Описание объявления: <input type="text" name="description" value="${product.description}" maxlength="4096" /><br><br>
+    Цена: <input type="number" name="price" value="${product.price!0}" min="0" /><br><br>
     Наличие: <input type="checkbox" name="available"/><br><br>
 
     <input type="submit" value="Редактировать товар"/>

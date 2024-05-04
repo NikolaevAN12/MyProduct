@@ -1,41 +1,48 @@
 package com.example.MyProduct.services;
 
 import com.example.MyProduct.models.Product;
+import com.example.MyProduct.repositories.ProductRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class ProductService {
-    private List<Product> products = new ArrayList<>();
-    private long ID = 0;
+    private final ProductRepository productRepository;
 
-    {
-        products.add(new Product(++ID, "PlayStation 5", "Simple description", 67000, true));
-        products.add(new Product(++ID, "Iphone 8", "Simple description", 24000, false));
+    public List<Product> listProducts(String title) {/*Получение всего списка*/
+        if (title != null)
+            return productRepository.findByTitle(title);
+        return productRepository.findAll();
     }
 
-    public List<Product> listProducts() {  /*Получение всего списка*/
-        return products;
-    }
 
     public void saveProduct(Product product) {
-        product.setId(++ID);
-        products.add(product);
+        log.info("Saving new {}", product);
+        productRepository.save(product);
     }
-    public void updateProduct(Long id,Product product) {
-        products.replaceAll(product1 -> product1.getId().equals(id)? product : product1);    }
 
-    public void deleteProduct(Long id) { /*Удалить товар*/
-        products.removeIf(product -> product.getId().equals(id));
+    public void updateProduct(Long id, Product product) {
+        productRepository.findById(id).ifPresent(p -> {
+            BeanUtils.copyProperties(product, p);
+            productRepository.save(product);
+        });
+    }
+
+    public void deleteProduct(Long id) {
+        productRepository.deleteById(id);
     }
 
     public Product getProductById(Long id) {
-        for (Product product : products) {
-            if (product.getId().equals(id))
-                return product;
-        }
-        return null;
+        return productRepository.findById(id).orElse(null);
     }
 }
+
+
+
