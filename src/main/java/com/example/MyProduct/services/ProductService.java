@@ -5,10 +5,11 @@ import com.example.MyProduct.repositories.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -42,7 +43,11 @@ public class ProductService {
     public Product getProductById(Long id) {
         return productRepository.findById(id).orElse(null);
     }
+
+    public List<Product> findByFilter(String title, Double priceStart, Double priceEnd, Boolean available, Sort sort, Integer limit) {
+
+        return productRepository.findByFilter(title, priceStart, priceEnd, available, sort).stream().limit(limit).collect(Collectors.toList());
+    }
+
+
 }
-
-
-
